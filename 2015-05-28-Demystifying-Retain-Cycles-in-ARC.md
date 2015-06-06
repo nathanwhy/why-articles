@@ -1,6 +1,9 @@
 
 Demystifying Retain Cycles in ARC
+
 揭秘 ARC 下的循环引用
+
+原文：http://digitalleaves.com/blog/2015/05/demystifying-retain-cycles-in-arc/
 
 Retain cycles in ARC are kind of like a Japanese B-horror movie. When you start as a Cocoa/Cocoa Touch developer, you don’t even bother about their existence. Then one day one of your apps starts crashing because of memory leaks and suddenly you become aware of them, and start seeing retain cycles like ghosts everywhere. As the years pass, you learn to live with them, detect them and avoid them… but the final scare is still there, looking for its chance to creep in.
 
