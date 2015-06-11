@@ -7,16 +7,16 @@ Demystifying Retain Cycles in ARC
 
 Retain cycles in ARC are kind of like a Japanese B-horror movie. When you start as a Cocoa/Cocoa Touch developer, you don’t even bother about their existence. Then one day one of your apps starts crashing because of memory leaks and suddenly you become aware of them, and start seeing retain cycles like ghosts everywhere. As the years pass, you learn to live with them, detect them and avoid them… but the final scare is still there, looking for its chance to creep in.
 
-ARC 下的循环引用类似于日本的 b-horror 电影。当你刚成为苹果开发者，你或许不会因为他们的存在而操心。等到某天，你的一个 app 因内存泄露而闪退，你会突然感受到他们幽灵般的存在。随着时间的进展，你开始学会检测和避免它们，但是担心它们可能已经悄然发生的恐惧仍然存在。
+ARC 下的循环引用类似于日本的 B 级恐怖片。当你刚成为苹果开发者，你或许不会关心他们的存在。直到某天你的一个 app 因内存泄露而闪退，你才突然意识到他们的存在，并且发现在循环引用像幽灵一样存在于代码的各个角落。年复一年，你开始学会如何处理循环引用，检测和避免它们，但是这部片子的恐怖结局还是在那里，随时可能出现。
 
 One of the biggest disappointments of ARC for many developers (including me) was that Apple kept ARC for memory management. ARC unfortunately doesn’t include a circular reference detector, so it’s prone to retain cycles, thus forcing the developers to take special precautions when writing code.
 
-ARC 令许多开发者最失望的地方在于苹果一直未公开 ARC 的内存管理。ARC 很不幸地没有包括循环引用检测，因此很容易就产生循环引用，迫使开发者需要在写代码的时候采取一些防范措施。
+ARC 令许多开发者（包括我）感到失望的地方之一是苹果保留了用 ARC 来进行内存管理。ARC 很不幸地没有包括一个循环引用检测器，所以很容易就会产生循环引用，因此迫使开发者在写代码的时候采取一些特别的防范措施。
 
 Retain cycles are a obscure topic for iOS developers. There are lot of misinformation in the web [1][2], to the point of people giving wrong suggestions and “fixes” that could even potentially lead to problems and crashes in your App. In this article, I would like to shed some light on the subject matter.
 
-循环引用一直是一些 iOS 开发者感到费解的一个课题。
-网上对此也有一些误解[[1]](https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself/)[[2]](http://www.reigndesign.com/blog/debugging-retain-cycles-in-objective-c-four-likely-culprits/)，这些文章给了错误的建议和修复方法，其方法甚至可能潜在引发问题和导致 app 闪退。在这片文章，我想要针对这些问题解释清楚。
+循环引用一直是一些 iOS 开发者感到费解的一个问题。
+网上有许多误导信息[[1]](https://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself/)[[2]](http://www.reigndesign.com/blog/debugging-retain-cycles-in-objective-c-four-likely-culprits/)，这些文章给了错误的建议和修复方法，其方法甚至可能引发问题和导致 app 闪退。在这片文章，我想要针对这些问题解释清楚。
 
 ##Some (brief) theory
 ##理论简介
@@ -27,11 +27,11 @@ Memory management in Cocoa dates back to Manual Retain Release (MRR). In MRR, th
 ![retainCycle](retainCycle.jpg)
 
 ##Why should I care?
-##我应该关心什么？
+##我为什么要关心这些？
 
 The problem with ARC is that it’s prone to retain cycles. A retain cycle occurs when two different objects contain a strong reference to each other. Think of a Book object that contains a collection of Page objects, and that every Page object has a property pointing to the book the page is contained in. When you release the variables that point to Book and Page, they still have strong references among them, so they won’t be released and their memory freed, even though there are no variables pointing to them.
 
-在 ARC 需要注意的问题是循环引用。当两个不同的对象各有一个强引用指向对方，那么循环引用便产生了。试想下，一个 *book* 对象持有多个 page 对象，每个 page 对象又有个属性指向它所属的 *book* 对象。当你释放了持有 book 和 page 对象的变量时，他们仍然还有强引用指向各自，因此你无法释放他们的内存，即使已经没有变量持有他们。
+ARC 的问题是循环引用很容易发生。当两个不同的对象各有一个强引用指向对方，那么循环引用便产生了。试想下，一个 *book* 对象持有多个 page 对象，每个 page 对象又有个属性指向它所属的 *book* 对象。当你释放了持有 book 和 page 对象的变量时，他们仍然还有强引用指向各自，因此你无法释放他们的内存，即使已经没有变量持有他们。
 
 Unfortunately, not all retain cycles are so easy to spot. Transitive relationships between objects (A references B, which in turn references C, which happens to reference A) can lead to retain cycles. To make things worse, both Objective-C blocks and Swift closures are considered independent memory objects, so any reference to an object inside a block or closure will retain its variable, thus leading to a potential retain cycle if the object also retains the block.
 
@@ -42,10 +42,10 @@ Retain cycles can be potentially dangerous for an App, leading to high memory co
 循环引用对 app 有潜在的危害，会使内存消耗过高，性能变差和 app 闪退等。然而，苹果文档对于可能发生循环引用的场景以及如何避免并没有详细描述，这就容易导致一些误解和不良的编程习惯。
 
 ##Use case scenarios
-##发生场景
+##一些用例模拟
 So, without further ado, let’s analyze some scenarios to determine whether or not they cause a retain cycle and how to avoid them:
 
-废话不多说，我们一起来分析可能产生循环引用的场景，以及如何避免它。
+废话不多说，我们一起来分析一些场景中是否会产生循环引用，以及如何避免它。
 
 ###Parent-child object relationship
 ###父子对象关系
@@ -74,7 +74,7 @@ class Child {
 
 The fact that parent is a weak variable in Child forces us to define it as an optional type in swift. An alternative for not having to use an optional is declaring parent as “unowned” (meaning that we don’t claim ownership or memory management on the variable). However, in this case we must be extremely careful to ensure that Parent doesn’t become nil as long as there is a Child instance pointing to it, or we will end up with a nasty crash:
 
-事实上在 swift，子类指向父对象是一个弱引用，这就迫使我们将该弱引用定义为 optional 类型。如果不使用 optional 可以有另一种做法，将指向父对象的变量声明为“无主引用（unowned）”（表明我们不持有该对象，也不对其进行内存管理）。然而在这个案例，我们必须非常关心，确保父对象不变成 nil，只要还有子对象指向它，否则会直接闪退。
+在 swift 中子类指向父对象的变量是一个弱引用，这就迫使我们将该弱引用定义为 optional 类型。如果不使用 optional 可以有另一种做法，将指向父对象的变量声明为“无主引用（unowned）”（表明我们不持有该对象，也不对其进行内存管理）。然而在这种情况下，我们必须非常小心，确保只要还有子对象指向它，父对象不变成 nil，否则会直接闪退。
 
 
 ```swift
@@ -105,7 +105,7 @@ In general, the accepted practice is that the parent must own (strongly referenc
 
 ###Blocks and closures contained in instance variables
 
-###含有实例变量的 Block 和闭包
+###当 Block 和闭包包含在类的成员变量中
 
 Another classic example, though not so intuitive. As we explained before, closures and blocks are independent memory objects, and retain the objects they reference, so if we have class with a closure variable, and that variable happens to reference a property or method in the owning object, there would be a retain cycle because the closure is “capturing” self by creating a strong reference to it.
 
@@ -145,7 +145,7 @@ var myClosureVar = {
 
 This way, when the closures reaches the end, the self variable is not strongly retained, so it gets released, breaking the cycle. Note how self becomes an optional inside the closure when declared weak.
 
-在这个方法，当闭包结束的时候，内部的 self 变量不会被强引用，所以它会被释放，破除了循环引用。注意当 self 被声明为 weak，闭包内部的 self 是个可选值。
+用这个方法，当闭包结束的时候，内部的 self 变量不会被强引用，所以它会被释放，打破了循环引用。注意当 self 被声明为 weak，闭包内部的 self 是个可选值。
 
 ###GCD: dispatch_async
 
@@ -206,7 +206,7 @@ func myMethod() {
 
 As with dispatch_async and other GCD related methods, we should not worry about retain cycles in local closures and blocks not referenced strongly by the class instance.
 
-和 dispatch_async 和其他相关的 GCD 相关方法一样，我们不需要担心局部变量闭包和 block 被类实例强引用而产生循环引用。
+和 dispatch_async 和其他相关的 GCD 相关方法一样，我们不需要担心局部变量闭包和 block 产生循环引用。
 
 ###Delegation scheme
 ###代理协议
@@ -224,20 +224,20 @@ And in swift:
 
 In most cases, the delegate of an object has instantiated the object or is supposed to outlast the object (and react to the delegate methods), so under a good class design we should not find any problems regarding the lifetime of objects.
 
-在大多数的例子，一个对象的代理持有一个实例化的对象，或应当生命周期长于该对象（从而响应代理方法），因此在一个优秀的类的设计，我们不应该找到任何无视对象生命周期的问题。
+在大多数的情况中，一个对象的代理持有一个实例化的对象，或应当生命周期长于该对象（从而响应代理方法），因此一个设计良好的类应该不需要我们考虑任何有关生命周期的问题。
 
 ###Debugging retain cycles with Instruments.
-###使用工具调试循环引用
+###使用 Instruments 调试循环引用
 
 It doesn’t matter how hard I try to avoid retain cycles, sooner or later I forget to include a weak reference and accidentally create one (thanks for nothing, ARC!). Luckily, the Instruments application included in the XCode suite is a great tool for detecting and locating retain cycles. It is always a good practice to profile your App once the development phase is over and before submitting it to the Apple Store. Instruments has many templates for profiling different aspects of the App, but the one we’re interested in is the “Leaks” option.
 
-不管我多努力仔细，我有时还是会忘记声明一个弱引用，然后意外地创建一个新的对象（ARC 也就那样）。幸运的是，XCode 自带了一个很强大的工具，用于检测和定位循环引用。一旦你的 app 开发结束，即将提交到 Apple Store，先分析你的 app 是一个好的习惯。工具有很多组件，可以用来分析 app 的不同方面，但是我们现在关心的时 Leak 选项。
+不管我多努力仔细，我有时还是会忘记声明一个弱引用，然后意外地创建一个新的对象（感谢 ARC 的无所作为！）。幸运的是，XCode 自带了一个很强大的工具 Instruments，用于检测和定位循环引用。一旦你的 app 开发结束，即将提交到 Apple Store，先分析你的 app 是一个好的习惯。Instruments 有很多组件，可以用来分析 app 的不同方面，但是我们现在关心的时 Leak 选项。
 
 ![instrument](instruments.png)
 
 Once Instruments opens, you should start your application and do some interactions, specially in the areas or view controllers you want to test. Any detected leak will appear as a red line in the “Leaks” section. The assistant view includes an area where Instruments will show you the stack trace involved in the leak, giving you insights of where the problem could be and even allowing you to navigate directly to the offending code.
 
-一旦打开工具，你应该启动你的应用，执行一些交互操作，特别是你想要测试的区域或视图控制器。被检测到的泄露都会以一条红色线显示在 Leaks 区域。assistant view 会显示关于泄露的栈追踪，甚至可以直接定位到出问题的代码。
+Instruments 一启动，你的应用也应该启动了，然后执行一些交互操作，特别是你想要测试的区域或视图控制器。被检测到的泄露都会以一条红色线显示在 Leaks 区域。Assistant 视图会显示关于泄露的栈追踪，甚至可以直接定位到出问题的代码。
 
 ![instrument2](instruments2.png)
 
