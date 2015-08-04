@@ -75,7 +75,7 @@ In a second we will see how function application is different when something is 
 When a value is wrapped in a context, you can’t apply a normal function to it:
 
 
-当一个值被封装到盒子里，一个普通的函数无法作用与它：
+当一个值被封装到盒子里，一个普通的函数无法作用于它：
 
 ![](http://adit.io/imgs/functors/no_fmap_ouch.png)
 
@@ -118,7 +118,7 @@ Optional.Some(2).map { $0 + 3 }
 A Functor is any type that defines how `map` (`fmap` in Haskell) applies to it. Here’s how `map`works:
 
 
-任意定义了 `map` （ Haskell 中的 `fmap`）如何作用与自己的类型都是 Functor，`map`是这样作用的：
+任意定义了 `map` （ Haskell 中的 `fmap`）如何作用于自己的类型都是 Functor，`map`是这样作用的：
 
 ![](http://adit.io/imgs/functors/fmap_def.png)
 
