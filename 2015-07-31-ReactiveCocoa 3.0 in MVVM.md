@@ -2,6 +2,8 @@ This is my final article on ReactiveCocoa 3.0 (RAC3), where I demonstrate some m
 
 这个是我最后一篇关于 ReactiveCocoa 3.0 （简称 RAC3）的文章，主要介绍了在 MVVM 实践中更多复杂的 RAC 3.0 的用法。
 
+(译者注：前两篇为 [ReactiveCocoa 3.0 初见](http://ios.jobbole.com/82081/)和 [ReactiveCocoa 3.0 初见(2)](http://ios.jobbole.com/82125/))
+
 ReactiveCocoa 3.0 is currently in beta, having had [four beta releases](https://github.com/ReactiveCocoa/ReactiveCocoa/releases) in the past month. Version 3.0 brings a whole new Swift API alongside an updated Objective-C counterpart. While the core concepts of functional reactive programming remain the same, the Swift API is *very* different to the versions that have come before it, using generics, custom operators and curried functions to good effect. In my previous articles I took a look at the [generic Signal class](http://blog.scottlogic.com/2015/04/24/first-look-reactive-cocoa-3.html), which allows for ‘strongly typed’ reactive pipelines, and the [SignalProducer interface](http://blog.scottlogic.com/2015/04/28/reactive-cocoa-3-continued.html), that gives a cleaner representation of signals that have side-effects.
 
 ReactiveCocoa 3.0 当前还处于测试阶段，截止本文发表当天，已经有 [4 个 beta 版](https://github.com/ReactiveCocoa/ReactiveCocoa/releases)。相较于 Objective-C 版本，3.0 版本带来了全新的 Swift API。尽管函数响应式编程的核心理念还是保持不变的，但是 Swfit API 相比于之前的版本却有很大的不同。它使用了泛型，自定义操作符和柯里化函数，实现效果相当不错。在我前面的几个版本中，我探讨了 [generic Signal class（泛信号）](http://blog.scottlogic.com/2015/04/24/first-look-reactive-cocoa-3.html)，它允许强类型的信号管道，还有一篇 [SignalProducer interface](http://blog.scottlogic.com/2015/04/28/reactive-cocoa-3-continued.html)，是关于清除信号带来的一些副作用。
