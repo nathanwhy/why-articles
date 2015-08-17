@@ -1,6 +1,6 @@
-MORE SWIFT ATTRIBUTES
+# MORE SWIFT ATTRIBUTES
 
-一些少见的 Swift 属性
+# 一些少见的 Swift 属性
 
 Swift has a variety of little documented (or undocumented) attributes just sitting there waiting to be used. Let's look at a few of them:
 
@@ -14,7 +14,7 @@ This attribute gives the compiler inlining hints. The valid values are __always
 
 edit: To further explain: though LLVM has the concept of forced inlining, we don't currently know if this attribute actually maps to that directly. Nor do we know if there are size limits that will cause the compiler to ignore this and skip inlining. In theory it should have this behavior but I'm not going to promise anyone that it does.
 
-修改：进一步解释，尽管 LLVM 有强制内联的概念，但我们现在并不清楚是否是这个属性。我们也不清楚是否有大小限制导致编译器忽略它，跳过内联。理论上它本应该有这个行为，但是我不敢保证它有。
+修改：进一步解释，尽管 LLVM 有强制内联的概念，但我们现在并不清楚这个属性是否与其直接关联。我们也不清楚是否有大小限制导致编译器忽略它，跳过内联。理论上它本应该有这个行为，但是我不敢保证它有。
 
 Note that @inline attributes are ignored in debug builds (when optimizations are turned off).
 
@@ -26,18 +26,18 @@ Note that @inline attributes are ignored in debug builds (when optimizations a
 
 I originally left this one out of the list. It causes the compiler to inline the function much earlier in the pipeline. It is intended for "very primitive functions like +(Int, Int)" that should "never be emitted as independent functions".
 
-我原本不把这个列入清单。它会使编译器更早在管线中内联函数。它的目的是为了["像(Int, Int)这种非常原始的函数"不应该是一个独立的函数"](https://devforums.apple.com/message/988972#988972)
+我原本不把这个列入清单。它会使编译器更早得在构建流程中进行内联函数。它的作用是使["像(Int, Int)这种非常简单的函数"不应该是一个独立的函数"](https://devforums.apple.com/message/988972#988972)
 
 `@transparent` functions are inlined even in debug mode with no optimizations, so things like `1 + 1` aren't horribly slow function calls. Otherwise it works very similarly to `@inline(__always)`.
 
-`@transparent` 函数是内联的，即使是在没有 optimization 的 debug 模式下, 所以像 `1 + 1` 这种简单函数也可以很快调用. 否则它的作用就像是 `@inline(__always)`.
+`@transparent` 函数是内联的，即使是在没有 optimization 的 debug 模式下, 所以像 `1 + 1` 这种简单函数也可以调用运行很快. 否则它的作用就像是 `@inline(__always)`.
 
 ###`@AVAILABILITY`
 
 
 This attribute marks things as only available on certain platforms or in certain versions. The first parameter is the platform. Can be `*` for all, `iOS`, or `OSX`. You can specify multiple `@availability` attributes if necessary for different platforms.
 
-这个属性标记事物只在某个确定的版本或平台上有效。第一个参数是平台。可以是 `*`（所有）、`iOS` 或 `OSX`。如果需要针对多个不同平台，可以指定多个 `@availability` 属性。
+这个属性标记只在某个确定的版本或平台上有效的对象。第一个参数是平台。可以是 `*`（所有）、`iOS` 或 `OSX`。如果需要针对多个不同平台，可以指定多个 `@availability` 属性。
 
 The second parameter can be `unavailable` which indicates that this item is not available at all on the given platform. Otherwise you can specify a combination of one or more versions: `introduced`, `deprecated`, and `obsoleted`. Obsoleted means the item was removed, deprecated just means it will give a warning if used. Lastly you can specify `message` which will be output by the compiler if the item is used. Some examples:
 
@@ -59,7 +59,7 @@ func foo3() {}
 
 Just like it says: the compiler can assume this function is either the beginning of an eternal run loop, `while true { }`, or it aborts or exits the process.
 
-如同名字的意思一样，编译器会假定这个函数处在无限循环之中，`while true { }`，或者放弃或者退出进程。
+如同名字的意思一样，编译器会假定这个函数是整体 run loop 的开始，`while true { }`，或者这个函数终结、退出当前进程。
 
 Edit: Commenter Marco Masser points out that the compiler will ignore missing return values in a function if you call another function marked `@noreturn` because it understands the control flow.
 
@@ -69,13 +69,13 @@ Edit: Commenter Marco Masser points out that the compiler will ignore missing r
 
 Gives the symbol name for the function, method, or property's implementation. If you can figure out the parameters and their types then this will let you call internal Swift standard library functions... or even C functions for which you don't have the headers handy: @asmname("function") func f()
 
-给函数、方法、或属性的实现一个标记名字。如果你找到了参数和他们的类型，你将会调用 Swift 内部标准库的函数...或者甚至是不需要头文件的 C 函数，`@asmname("function") func f()`。
+给函数、方法、或属性的实现一个标记名字。如果你找到了参数和他们的类型说明，使用这个标记你可以调用 Swift 内部标准库的函数...或者甚至是没有头文件的 C 函数，`@asmname("function") func f()`。
 
 ###`@UNSAFE_NO_OBJC_TAGGED_POINTER`
 
 This one is still a mystery but my guess is it tells Swift not to use tagged pointers when bridging to Objective-C.
 
-这个也是一个迷，但我猜是用来告诉编译器，当桥接 Objective-C 时不要使用 tagged pointers。
+这个标记仍然是一个迷，但我猜是用来告诉编译器，当桥接 Objective-C 时不要使用 tagged pointers。
 
 (译者注：[`tagged pointers`](http://blog.devtang.com/blog/2014/03/21/weak_object_lifecycle_and_tagged_pointer/)。)
 
