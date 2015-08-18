@@ -26,7 +26,7 @@ Note that @inline attributes are ignored in debug builds (when optimizations a
 
 I originally left this one out of the list. It causes the compiler to inline the function much earlier in the pipeline. It is intended for "very primitive functions like +(Int, Int)" that should "never be emitted as independent functions".
 
-我原本不把这个列入清单。它会使编译器更早得在构建流程中进行内联函数。它的作用是使["像(Int, Int)这种非常简单的函数"不应该是一个独立的函数"](https://devforums.apple.com/message/988972#988972)
+我原本不把这个列入清单。它会使编译器更早地在构建流程中进行内联函数。它的作用是使["像(Int, Int)这种非常简单的函数"不应该是一个独立的函数"](https://devforums.apple.com/message/988972#988972)
 
 `@transparent` functions are inlined even in debug mode with no optimizations, so things like `1 + 1` aren't horribly slow function calls. Otherwise it works very similarly to `@inline(__always)`.
 
