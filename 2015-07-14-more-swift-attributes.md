@@ -59,7 +59,7 @@ func foo3() {}
 
 Just like it says: the compiler can assume this function is either the beginning of an eternal run loop, `while true { }`, or it aborts or exits the process.
 
-如同名字的意思一样，编译器会假定这个函数是一个永恒 run loop 的开始，`while true { }`，或者这个函数终结、退出当前进程。
+如同名字的意思一样，编译器会假定这个函数是一个永恒 run loop 的开始，`while true { }`，或者假定这个函数终结、退出当前进程。
 
 Edit: Commenter Marco Masser points out that the compiler will ignore missing return values in a function if you call another function marked `@noreturn` because it understands the control flow.
 
