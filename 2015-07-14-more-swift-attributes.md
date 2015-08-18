@@ -37,7 +37,7 @@ I originally left this one out of the list. It causes the compiler to inline the
 
 This attribute marks things as only available on certain platforms or in certain versions. The first parameter is the platform. Can be `*` for all, `iOS`, or `OSX`. You can specify multiple `@availability` attributes if necessary for different platforms.
 
-这个属性标记只在某个确定的版本或平台上有效的对象。第一个参数是平台。可以是 `*`（所有）、`iOS` 或 `OSX`。如果需要针对多个不同平台，可以指定多个 `@availability` 属性。
+这个属性标记那些只在某些特定版本或平台上有效的对象。第一个参数是平台。可以是 `*`（所有）、`iOS` 或 `OSX`。如果需要针对多个不同平台，可以指定多个 `@availability` 属性。
 
 The second parameter can be `unavailable` which indicates that this item is not available at all on the given platform. Otherwise you can specify a combination of one or more versions: `introduced`, `deprecated`, and `obsoleted`. Obsoleted means the item was removed, deprecated just means it will give a warning if used. Lastly you can specify `message` which will be output by the compiler if the item is used. Some examples:
 
